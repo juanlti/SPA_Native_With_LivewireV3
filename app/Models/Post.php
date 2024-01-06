@@ -23,9 +23,9 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function Tags():BelongsToMany{
+    public function tags():BelongsToMany{
         // relacion (inversa) de Tag ( m )  ----> a Post ( m )
-       $this->belongsToMany(Tag::class);
+      return  $this->belongsToMany(Tag::class);
 
     }
 }
