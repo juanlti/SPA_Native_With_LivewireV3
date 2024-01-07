@@ -14,7 +14,10 @@ class Formulario extends Component
 {
 
 
+
+
     public  $categories,$tags;
+
 
     // FORMA NUMERO 2, definimos de manera indivual, el atributo a valdiar
     /*
@@ -30,17 +33,21 @@ class Formulario extends Component
     public array $selectTag=[];
     */
 
-    // FORMA NUMERO 3
     /*
+    // FORMA NUMERO 3
+
     #[Rule([
         'postCreate.title'=>'required',
         'postCreate.content'=>'required',
-        'postCreate.tags'=>'required|required|array',
-        'postCreate.category_id'=>'required|array',
+        'postCreate.tags'=>'required|array',
+        'postCreate.category_id'=>'required|exists:categories,id|array',
 
     ],
     ['postCreate.title'=>'titulo']
     )]
+
+
+
     */
     public array $postCreate=[
         'title' => '',
@@ -50,24 +57,28 @@ class Formulario extends Component
 
     ];
     // FORMA NUMERO 4 (MANERA SIMILAR EN LIVIWIRE 2 )
-    public function rules(){
+
+    public function rules(): array
+    {
         return [
             'postCreate.title'=>'required',
             'postCreate.content'=>'required',
-            'postCreate.tags'=>'required|required|array',
-            'postCreate.category_id'=>'required|array',
+            'postCreate.tags'=>'required|array',
+            'postCreate.category_id'=>'required|exists:categories,id',
 
             // agrego la extension para el resto de los formululario
-            'postEdit.title'=>'required',
+          //  'postEdit.title'=>'required',
 
             // DESVENTAJA,  SE EJECUTA TODAS LAS REGLAS INDEPENDINETE  DE QU FORMLARIO SE ESTE UTILIZANDO
 
         ];
     }
+
     public function messages(){
         //  personalizacion del mensaje de errro
         return [
-            'postCreate.title'=>'Ingrese un titulo, porfavor'
+            'postCreate.title.required'=>'Ingrese un titulo, porfavor',
+             'postCreate.content.required'=>'Ingrese el contenido'
         ];
     }
 
@@ -79,7 +90,8 @@ class Formulario extends Component
 
 
     }
-        public $is_published,$image_path;
+
+    public $is_published,$image_path;
 
     public $openModal=false;
 
@@ -113,81 +125,85 @@ class Formulario extends Component
     private mixed $errors;
 
 
-public function edit(Int $idPost){
+    public function edit(Int $idPost){
 
-    //RESETEO  LA ULTIMA VERIFICACION REALIZADA, CON EL FIN DE EVITAR MENSAJES A OBJETOS NO CORRESPONDIENTES
-    $this->resetValidation();
+        //RESETEO  LA ULTIMA VERIFICACION REALIZADA, CON EL FIN DE EVITAR MENSAJES A OBJETOS NO CORRESPONDIENTES
+        $this->resetValidation();
 
-    $this->openModal=true;
-    // cuando abro el modal, recupero el id para el metodo update
-    $this->postEditId=$idPost;
-
-    $edit=Post::find($idPost);
-    // MANERA 4
-    // REGLAS DE VALIDACION PERSONALIZADAS PARA CADA FORM
-
-
-    // una vez recuperado el objeto a modificar, reemplazmos los atributos en el arreglo de carga modal
-    $this->postEdit['title']=$edit->title;
-    $this->postEdit['category_id']=$edit->category_id;
-    $this->postEdit['content']=$edit->content;
-    $this->postEdit['tags']=$edit->tags->pluck('id')->toArray();
-    //>postEdit['tags']= almacena el valor de la relacion entre post --> tags (m),
-    // utiliza el atributo id de las tags (>pluck('id')  y lo convierte en un arreglo
+        $this->openModal=true;
+        // cuando abro el modal, recupero el id para el metodo update
+        $this->postEditId=$idPost;
 
 
 
 
-}
+        $edit=Post::find($idPost);
+
+
+
+        // una vez recuperado el objeto a modificar, reemplazmos los atributos en el arreglo de carga modal
+        $this->postEdit['title']=$edit->title;
+        $this->postEdit['category_id']=$edit->category_id;
+        $this->postEdit['content']=$edit->content;
+        $this->postEdit['tags']=$edit->tags->pluck('id')->toArray();
+        //>postEdit['tags']= almacena el valor de la relacion entre post --> tags (m),
+        // utiliza el atributo id de las tags (>pluck('id')  y lo convierte en un arreglo
+
+
+
+
+    }
 
 //UPDATE METODO DEL MODAL
-public function update(){
-    $post=Post::find($this->postEditId);
+    public function update(){
+
 //dump('estoy en actualizacion  '.$this->postEditId);
 
 
 
-    $this->validate([
-        'postEdit.title'=>'required',
-        'postEdit.category_id'=>'required|array',
-        'postEdit.content'=>'required',
-        'postEdit.tags'=>'required|array',
-    ]);
+        // MANERA 4
+        // REGLAS DE VALIDACION PERSONALIZADAS PARA CADA FORM
+        $this->validate([
+            'postEdit.title'=>'required',
+            'postEdit.content'=>'required',
+            'postEdit.category_id'=>'required|exists:categories,id',
+            'postEdit.tags'=>'required|array'
+        ]);
+        $post=Post::find($this->postEditId);
+
 
 
 //$this->postEdit['category_id'],  SON LOS INPUTS (NUEVOS VALORES DEL CLIENTE)
-    $post->update([
-        'category_id'=>$this->postEdit['category_id'],
-        'title'=>$this->postEdit['title'],
-        'content'=>$this->postEdit['content'],
-    ]);
+        $post->update([
+            'category_id'=>$this->postEdit['category_id'],
+            'title'=>$this->postEdit['title'],
+            'content'=>$this->postEdit['content'],
+        ]);
 
-    //actualizo las etiquetas (o tags) del post del que estoy actualiando
-    $post->tags()->sync($this->postEdit['tags']);
-    // -> tangs() accedo a la relacion
-    // metodo sincronizacion con los valores que tenemos agregados  + los nuevos  sync()
-    // ->sync($this->postEdit['tags'])
+        //actualizo las etiquetas (o tags) del post del que estoy actualiando
+        $post->tags()->sync($this->postEdit['tags']);
+        // -> tangs() accedo a la relacion
+        // metodo sincronizacion con los valores que tenemos agregados  + los nuevos  sync()
+        // ->sync($this->postEdit['tags'])
 
         // refrrsco de actualizacion de post
-    $this->posts=Post::all();
-    //fin metodo update
+        $this->posts=Post::all();
+        //fin metodo update
 
 
-    // reseteo las variables a default
-    $this->reset(['postEdit','postEditId','openModal']);
+        // reseteo las variables a default
+        $this->reset(['postEdit','postEditId','openModal']);
 
-}
-public function delete(){
+    }
 
-}
-public function closedModal(){
-    $this->openModal=false;
-}
+    public function closedModal(){
+        $this->openModal=false;
+    }
 
     public function mount(){
         // CARGA DE DATOS DE MANERA INCONDICIONAL
         // $categories contiene la collecion almacenada de categorias
-       // $this->categories= Category::all();
+        // $this->categories= Category::all();
         $this->categories= Category::orderBy('id','desc')->get();
         //$this->posts = Post::orderBy('created_at', 'asc')->get();
         // $tags contiene la collecion almacenada de tags
@@ -200,19 +216,20 @@ public function closedModal(){
 
     }
     public function save(){
-       // dd("recibo todos los datos para crear un Post");
-    /*
-     * DATOS PARA CREAR EL OBJETO POST
-        dd([
-                'title'=>$this->title,
-            'content'=>$this->content,
-            'tags'=>$this->selectTag,
-            'category_id'=>$this->category_id,
+        // dd("recibo todos los datos para crear un Post");
 
-        ]);
+         // DATOS PARA CREAR EL OBJETO POST
+/*
+            dd([
+                'title'=>$this->postCreate['title'],
+                'content'=>$this->postCreate['content'],
+                'tags'=>$this->postCreate['tags'],
+                'category_id'=>$this->postCreate['category_id'],
 
+            ]);
 
-    */
+*/
+
         /*  FORMA NUMERO 1
         $validatedData  = $this->validate([
             // indicamos las reglas de validaciones con el primer []
@@ -245,7 +262,7 @@ public function closedModal(){
                 */
 
 
-       // dd($validatedData );
+        // dd($validatedData );
 
         // FORMA NUMERO 2 (CONTINUACION)
         //$this->validate();
@@ -253,7 +270,8 @@ public function closedModal(){
         //$this->createPost($validateData);
 
         // FORMA NUMERO 3 (CONTINUACION)
-        $this->validate();
+        $this->validate(); //  FOROMA NUMERO 3: utliza las reglas de validacion que estan en el metodo #[Rules()]
+
         $this->createPost2();
 
     }
@@ -278,16 +296,17 @@ public function closedModal(){
         //una vez creado y enlazado, limpiamos los inputs
         //actualizar la lista de Post con la accion de crear un nuevo Post
 
+
+
         $this->posts=Post::all();
         $this->reset(['postCreate']);
 
 
-
     }
     public function destroy(int $idPost){
-            //busco el objeto en la bd
-            $postDelete=Post::find($idPost);
-            //aplico el metodo delete al objeto a eliminar
+        //busco el objeto en la bd
+        $postDelete=Post::find($idPost);
+        //aplico el metodo delete al objeto a eliminar
         $postDelete->delete();
         //actualizo la lista
         $this->posts=Post::all();
@@ -295,45 +314,51 @@ public function closedModal(){
     }
 
 
-    public function createPost($validateData)
-    {
-        // Crea un objeto Post
-        $newPost = Post::create([
-
-            'title' => $validatedData['title'],
-            'content' => $validatedData['content'],
+        public function createPost($validateData)
+        {
 
 
-            'category_id' => $validatedData['category_id'],
+        /*
+            // Crea un objeto Post
+            $newPost = Post::create([
 
-        ]);
-        /* OTRA FORMA DE CREAR UN OBJETO
-        $newPost=Post::create(
-            $this->only('category_id','title','content')
-        );
+                'title' => $validatedData['title'],
+                'content' => $validatedData['content'],
+
+
+                'category_id' => $validatedData['category_id'],
+
+            ]);
         */
+            /* OTRA FORMA DE CREAR UN OBJETO
+            $newPost=Post::create(
+                $this->only('category_id','title','content')
+            );
+            */
         // Una vez creado el objeto Post, accedo a la relacion entre Post y Etiqueta (tag ),
         // la relacion se llama post_tag (tabla pivote)
 
         //Le asigno el id del nuevo objeto Post a la tabla  post_tag (pivote) como una clave foranea
         // logramos una relacion de 1 a M con la tabla pivote
-        $newPost->tags()->attach($this->selectTag);
-            // attach()  METODO QUE ASIGNA VALORES A UNA TABLA PIVOTE
+      //  $newPost->tags()->attach($this->selectTag);
+        // attach()  METODO QUE ASIGNA VALORES A UNA TABLA PIVOTE
 
         //una vez creado y enlazado, limpiamos los inputs
         //actualizar la lista de Post con la accion de crear un nuevo Post
 
-        $this->posts=Post::all();
-        $this->reset(['title','content','category_id','selectTag']);
+        //$this->posts=Post::all();
+        //$this->reset(['title','content','category_id','selectTag']);
 
 
 
-    }
+}
 
 
-    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
-    {
-        return view('livewire.formulario');
-    }
+
+
+ public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+ {
+     return view('livewire.formulario');
+ }
 
 }

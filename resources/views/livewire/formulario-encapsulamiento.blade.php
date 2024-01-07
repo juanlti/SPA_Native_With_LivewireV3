@@ -9,14 +9,11 @@
                 {{-- secion  01 del formulario --}}
                 {{-- @error('title') <span>{{ $message }}</span> @enderror --}}
 
-                <x-label>
+                <label>
                     Nombre
-
-                    <input type="text" class="w-full rounded-md" wire:model="postCreate.title">
-                </x-label>
-
-
-                <x-input-error for="postCreate.title"/>
+                </label>
+                <input type="text" class="w-full rounded-md" wire:model="PostCreateForm.title">
+                <x-input-error for="PostCreateForm.title"/>
 
 
             </div>
@@ -27,11 +24,11 @@
 
                 </x-label>
 
-                <x-textarea class="w-full" wire:model="postCreate.content">
+                <x-textarea class="w-full" wire:model="PostCreateForm.content">
 
 
                 </x-textarea>
-                <x-input-error for="postCreate.content"/>
+                <x-input-error for="PostCreateForm.content"/>
             </div>
             {{-- secion  02 del formulario --}}
             <div class="mb-4 ">
@@ -48,7 +45,7 @@
                         @endforeach
 
                     </x-select>
-                    <x-input-error for="postCreate.category_id"/>
+                    <x-input-error for="PostCreateForm.category_id"/>
                 </label>
             </div>
             <div>
@@ -56,7 +53,7 @@
                     @foreach($tags as $tag)
                         <li>
                             <label>
-                                <x-checkbox type="checkbox" value="{{$tag->id}}" wire:model="postCreate.tags">
+                                <x-checkbox type="checkbox" value="{{$tag->id}}" wire:model="PostCreateForm.tags">
 
                                 </x-checkbox>
                                 {{$tag['title']}}
@@ -68,7 +65,7 @@
 
 
                 </ul>
-                <x-input-error for="postCreate.tags"/>
+                <x-input-error for="PostCreateForm.tags"/>
             </div>
 
 
@@ -196,7 +193,8 @@
 
 
                             <div class="flex justify-end">
-                                <x-danger-button wire:click="$set('openModal',false)" class="mr-2">
+                                <x-danger-button wire:click="$set('
+                                )" class="mr-2">
                                     Cancelar
 
                                 </x-danger-button>
