@@ -7,11 +7,15 @@
 
             <div class="mb-4">
                 {{-- secion  01 del formulario --}}
-                @error('title') <span>{{ $message }}</span> @enderror
+                {{-- @error('title') <span>{{ $message }}</span> @enderror --}}
+
                 <label>
                     Nombre
                 </label>
-                <input type="text" class="w-full" wire:model="title" required>
+                <input type="text" class="w-full rounded-md" wire:model="postCreate.title">
+                <x-input-error for="postCreate.title"/>
+
+
             </div>
 
             <div class="mb-4">
@@ -20,17 +24,18 @@
 
                 </x-label>
 
-                <x-textarea class="w-full" wire:model="content" required>
+                <x-textarea class="w-full" wire:model="postCreate.content">
 
 
                 </x-textarea>
+                <x-input-error for="postCreate.content"/>
             </div>
             {{-- secion  02 del formulario --}}
             <div class="mb-4 ">
 
                 <label for="">
 
-                    <x-select class="w-full" wire:model="category_id" required>
+                    <x-select class="w-full" wire:model="postCreate.category_id">
                         <option value="" disabled>Selecione una Categoria</option>
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">
@@ -40,6 +45,7 @@
                         @endforeach
 
                     </x-select>
+                    <x-input-error for="postCreate.category_id"/>
                 </label>
             </div>
             <div>
@@ -47,10 +53,11 @@
                     @foreach($tags as $tag)
                         <li>
                             <label>
-                                <x-checkbox type="checkbox" value="{{$tag->id}}" wire:model="selectTag">
+                                <x-checkbox type="checkbox" value="{{$tag->id}}" wire:model="postCreate.tags">
 
                                 </x-checkbox>
                                 {{$tag['title']}}
+
 
                             </label>
                         </li>
@@ -58,6 +65,7 @@
 
 
                 </ul>
+                <x-input-error for="postCreate.tags"/>
             </div>
 
 
@@ -73,58 +81,158 @@
     </div>
 
 
+    {{--  {{"nombre del formulario".$formularioNombre}}  --}}
+    <div class="bg-white shadow rounded-lg p-6 mt-4">
+        <ul class="list-disc list-inside space-y-2"> {{--Lista  --}}
+            @foreach($posts as $post)
+                <li class="flex justify-between" wire:key="post--{{$post->id}}">
+                    {{-- CORRECTO FUNCIONAMIENTO DE RENDERIZADO PARA UNA COLECCION QUE VA SE ACTUALIZANDO EN TODO MOMENTO--}}
+                    {{-- LOGRAMOS UNA SEPARACION --}}
+
+                    {{$post->title}}
+                    {{--  {{$post->title}} izquierda --}}
+
+                    <div>
+                        {{-- bottones a la derecha --}}
+                        <x-button wire:click="edit({{$post->id}})">
+                            Editar
+                        </x-button>
 
 
-{{--  {{"nombre del formulario".$formularioNombre}}  --}}
-<div class="bg-white shadow rounded-lg p-6 mt-4">
-    <ul class="list-disc list-inside space-y-2"> {{--Lista  --}}
-        @foreach($posts as $post)
-            <li class="flex justify-between" wire:key="post--{{$post->id}}">
-                {{-- CORRECTO FUNCIONAMIENTO DE RENDERIZADO PARA UNA COLECCION QUE VA SE ACTUALIZANDO EN TODO MOMENTO--}}
-                {{-- LOGRAMOS UNA SEPARACION --}}
+                        <x-danger-button wire:click="destroy({{$post->id}})"
+                                         wire:confirm="Esta seguro que desea eliminar esta publicacion ?">
+                            Eliminar
+                        </x-danger-button>
+                    </div>
 
-                {{$post->title}}
-                {{--  {{$post->title}} izquierda --}}
+                </li>
 
-                <div>
-                    {{-- bottones a la derecha --}}
-                    <x-button wire:click="edit({{$post->id}})">
-                        Editar
-                    </x-button>
+            @endforeach
 
 
-                    <x-danger-button  wire:click="destroy({{$post->id}})"  wire:confirm="Esta seguro que desea eliminar esta publicacion ?">
-                       Eliminar
-                    </x-danger-button >
-                </div>
-
-            </li>
-
-        @endforeach
-
-
-    </ul>
+        </ul>
 
     </div>
 
 
+    {{-- MODAL PROPIO (:--}}
+    {{-- OCULTAMOS MODAL--}}
+    @if($openModal)
 
-{{-- MODAL--}}
-{{-- OCULTAMOS MODAL--}}
-@if($openModal)
-
-    {{-- formulario de edicion--}}
-    <div class="bg-gray-800 bg-opacity-25 fixed inset-0">
+        {{-- formulario de edicion--}}
+        <div class="bg-gray-800 bg-opacity-25 fixed inset-0">
             <div class="py-12">
-        {{-- CENTRAMOS EL CONTENIDO --}}
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            {{--  contenido centrodo ==>   holaaa  --}}
-            <div class="bg-white shadow rounded-lg p-6">
+                {{-- CENTRAMOS EL CONTENIDO --}}
+                <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+                    {{--  contenido centrodo ==>   holaaa  --}}
+                    <div class="bg-white shadow rounded-lg p-6">
 
-                <form wire:submit.prevent="update">
+                        <form wire:submit.prevent="update">
 
-                    <div class="mb-4">
-                        {{-- secion  01 del formulario --}}
+                            <div class="mb-4">
+                                {{-- secion  01 del formulario --}}
+                                @error('title') <span>{{ $message }}</span> @enderror
+                                <label>
+                                    Nombre
+                                </label>
+                                <input type="text" class="w-full" wire:model="postEdit.title">
+                                <x-input-error for="postEdit.title"></x-input-error>
+                            </div>
+
+                            <div class="mb-4">
+                                <x-label>
+                                    Contenido
+
+                                </x-label>
+
+                                <x-textarea class="w-full" wire:model="postEdit.content">
+                                    <x-input-error for="postEdit.content"></x-input-error>
+
+
+                                </x-textarea>
+                            </div>
+                            {{-- secion  02 del formulario --}}
+                            <div class="mb-4 ">
+
+                                <label for="">
+                                    Categorias
+
+                                    <x-select class="w-full" wire:model="postEdit.category_id">
+                                        <x-input-error for="postEdit.category_id"></x-input-error>
+                                        <option value="" disabled>Selecione una Categoria</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{$category->id}}">
+                                                {{$category->name}}
+                                            </option>
+
+                                        @endforeach
+
+                                    </x-select>
+                                </label>
+                            </div>
+                            <div>
+                                <ul>
+                                    @foreach($tags as $tag)
+                                        <li>
+                                            <label>
+                                                <x-checkbox type="checkbox" value="{{$tag->id}}"
+                                                            wire:model="postEdit.tags">
+
+                                                </x-checkbox>
+                                                {{$tag['title']}}
+
+                                            </label>
+                                        </li>
+
+                                    @endforeach
+
+
+                                </ul>
+                                <x-input-error for="postEdit.tags"></x-input-error>
+                            </div>
+
+
+                            <div class="flex justify-end">
+                                <x-danger-button wire:click="$set('openModal',false)" class="mr-2">
+                                    Cancelar
+
+                                </x-danger-button>
+
+                                <x-button>
+
+                                    Actualizar
+
+                                </x-button>
+
+
+                            </div>
+
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+
+            @endif
+            {{-- MODAL DE JETSTREAM --}}
+            {{--
+            <form wire:submit.prevent="update">
+                <x-dialog-modal wire:modal="openModal">
+                    <x-slot name="title">
+                        {{-- slot title --}}
+
+
+            {{--
+                            </x-slot>
+                            <x-slot name="content">
+                                {{-- slot contente --}}
+            {{--
+
+                <div class="mb-4">
+                    {{-- secion  01 del formulario --}}
+            {{--
                         @error('title') <span>{{ $message }}</span> @enderror
                         <label>
                             Nombre
@@ -144,6 +252,7 @@
                         </x-textarea>
                     </div>
                     {{-- secion  02 del formulario --}}
+            {{--
                     <div class="mb-4 ">
 
                         <label for="">
@@ -182,6 +291,14 @@
                     </div>
 
 
+
+
+                </x-slot>
+                <x-slot name="footer">
+
+                    {{-- slot footer --}}
+            {{--
+
                     <div class="flex justify-end">
                         <x-button class="mr-2">
 
@@ -197,14 +314,13 @@
                     </div>
 
 
-                </form>
+                </x-slot>
 
-            </div>
+            </x-dialog-modal>
+            </form>
+             --}}
+
         </div>
 
-    </div>
-
-    @endif
-    </div>
 
 </div>

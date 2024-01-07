@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Validator;
 
@@ -15,14 +16,78 @@ class Formulario extends Component
 
     public  $categories,$tags;
 
-    public  $title,$category_id='',$content,$is_published,$image_path;
+    // FORMA NUMERO 2, definimos de manera indivual, el atributo a valdiar
+    /*
+    #[Rule('required',message:'el campo titulo es requerido')]
+    public  $title;
+    #[Rule('required|exists:categories,id',as:'categoria')]
+    public $category_id='';
+
+    #[Rule('required')]
+    public $content;
+
+    #[Rule('required|array')]
+    public array $selectTag=[];
+    */
+
+    // FORMA NUMERO 3
+    /*
+    #[Rule([
+        'postCreate.title'=>'required',
+        'postCreate.content'=>'required',
+        'postCreate.tags'=>'required|required|array',
+        'postCreate.category_id'=>'required|array',
+
+    ],
+    ['postCreate.title'=>'titulo']
+    )]
+    */
+    public array $postCreate=[
+        'title' => '',
+        'content' => '',
+        'tags' =>[],
+        'category_id' =>'',
+
+    ];
+    // FORMA NUMERO 4 (MANERA SIMILAR EN LIVIWIRE 2 )
+    public function rules(){
+        return [
+            'postCreate.title'=>'required',
+            'postCreate.content'=>'required',
+            'postCreate.tags'=>'required|required|array',
+            'postCreate.category_id'=>'required|array',
+
+            // agrego la extension para el resto de los formululario
+            'postEdit.title'=>'required',
+
+            // DESVENTAJA,  SE EJECUTA TODAS LAS REGLAS INDEPENDINETE  DE QU FORMLARIO SE ESTE UTILIZANDO
+
+        ];
+    }
+    public function messages(){
+        //  personalizacion del mensaje de errro
+        return [
+            'postCreate.title'=>'Ingrese un titulo, porfavor'
+        ];
+    }
+
+    public function validationAttributes(): array{
+        // cambio de nombre del atributo verificado
+        return [
+            'postCreate.category_id'=>'categoria',
+        ];
+
+
+    }
+        public $is_published,$image_path;
 
     public $openModal=false;
-    public array $selectTag=[];
+
     //$$selectTag almacena los valores selecionados que recibimos por parte del cliente
 
     public $posts;
     public $postEditId='';
+
 
     public $postEdit=[
         // sincronizo cada clave con  su par correspondiente en el modal de edit
@@ -49,12 +114,17 @@ class Formulario extends Component
 
 
 public function edit(Int $idPost){
+
+    //RESETEO  LA ULTIMA VERIFICACION REALIZADA, CON EL FIN DE EVITAR MENSAJES A OBJETOS NO CORRESPONDIENTES
+    $this->resetValidation();
+
     $this->openModal=true;
     // cuando abro el modal, recupero el id para el metodo update
     $this->postEditId=$idPost;
 
     $edit=Post::find($idPost);
-
+    // MANERA 4
+    // REGLAS DE VALIDACION PERSONALIZADAS PARA CADA FORM
 
 
     // una vez recuperado el objeto a modificar, reemplazmos los atributos en el arreglo de carga modal
@@ -72,10 +142,19 @@ public function edit(Int $idPost){
 
 //UPDATE METODO DEL MODAL
 public function update(){
-
+    $post=Post::find($this->postEditId);
 //dump('estoy en actualizacion  '.$this->postEditId);
 
-$post=Post::find($this->postEditId);
+
+
+    $this->validate([
+        'postEdit.title'=>'required',
+        'postEdit.category_id'=>'required|array',
+        'postEdit.content'=>'required',
+        'postEdit.tags'=>'required|array',
+    ]);
+
+
 //$this->postEdit['category_id'],  SON LOS INPUTS (NUEVOS VALORES DEL CLIENTE)
     $post->update([
         'category_id'=>$this->postEdit['category_id'],
@@ -131,14 +210,29 @@ public function closedModal(){
             'category_id'=>$this->category_id,
 
         ]);
+
+
     */
+        /*  FORMA NUMERO 1
         $validatedData  = $this->validate([
+            // indicamos las reglas de validaciones con el primer []
             'title' => 'required|min:3',
             'content' => 'required|min:3',
-            'selectTag' => 'required',
-         'category_id' => 'required|numeric',
-        ]);
-        $errors = $this->getErrorBag();
+            'selectTag' => 'required|array|min:1',
+         'category_id' => 'required|exists:categories,id',
+
+        ],[
+            // personalizamos el mensaje de error con el segundo []
+            'title.required'=>' el campo titulo es requerido'
+
+        ],[
+            // cambiamos el nombre del atributo para validar con el tercer []
+            'category_id'=>'categoria'
+
+            ]);
+        */
+        /*
+        //$errors = $this->getErrorBag();
 
         // Mensajes de error para el campo 'title'
         $errorTitle = $errors->first('title');
@@ -148,10 +242,44 @@ public function closedModal(){
         $errorTags = $errors->first('selectTag');
         // Mensajes de error para el campo 'category_id'
         $errorCategoryId = $errors->first('category_id');
+                */
 
 
        // dd($validatedData );
-        $this->createPost($validatedData);
+
+        // FORMA NUMERO 2 (CONTINUACION)
+        //$this->validate();
+        // FIN DE NUMERO 2
+        //$this->createPost($validateData);
+
+        // FORMA NUMERO 3 (CONTINUACION)
+        $this->validate();
+        $this->createPost2();
+
+    }
+    public function createPost2(){
+
+        $newPost = Post::create([
+
+            'title' => $this->postCreate['title'],
+            'content' => $this->postCreate['content'],
+
+
+            'category_id' =>$this->postCreate['category_id'],
+
+
+
+        ]);
+
+
+        $newPost->tags()->attach($this->postCreate['tags']);
+        // attach()  METODO QUE ASIGNA VALORES A UNA TABLA PIVOTE
+
+        //una vez creado y enlazado, limpiamos los inputs
+        //actualizar la lista de Post con la accion de crear un nuevo Post
+
+        $this->posts=Post::all();
+        $this->reset(['postCreate']);
 
 
 
@@ -167,7 +295,7 @@ public function closedModal(){
     }
 
 
-    public function createPost($validatedData)
+    public function createPost($validateData)
     {
         // Crea un objeto Post
         $newPost = Post::create([
