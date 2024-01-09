@@ -12,11 +12,11 @@
                 <x-label>
                     Nombre
 
-                    <input type="text" class="w-full rounded-md" wire:model="postCreate.title">
+                    <input type="text" class="w-full rounded-md" wire:model="postCreateForm.title">
                 </x-label>
 
 
-                <x-input-error for="postCreate.title"/>
+                <x-input-error for="postCreateForm.title"/>
 
 
             </div>
@@ -27,7 +27,7 @@
 
                 </x-label>
 
-                <x-textarea class="w-full" wire:model="postCreate.content">
+                <x-textarea class="w-full" wire:model="postCreateForm.content">
 
 
                 </x-textarea>
@@ -38,7 +38,7 @@
 
                 <label for="">
 
-                    <x-select class="w-full" wire:model="postCreate.category_id">
+                    <x-select class="w-full" wire:model="postCreateForm.category_id">
                         <option value="" disabled>Selecione una Categoria</option>
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">
@@ -56,7 +56,7 @@
                     @foreach($tags as $tag)
                         <li>
                             <label>
-                                <x-checkbox type="checkbox" value="{{$tag->id}}" wire:model="postCreate.tags">
+                                <x-checkbox type="checkbox" value="{{$tag->id}}" wire:model="postCreateForm.tags">
 
                                 </x-checkbox>
                                 {{$tag['title']}}
@@ -138,7 +138,7 @@
                                 <label>
                                     Nombre
                                 </label>
-                                <input type="text" class="w-full" wire:model="postEdit.title">
+                                <input type="text" class="w-full" wire:model="postEditForm.title">
                                 <x-input-error for="postEdit.title"></x-input-error>
                             </div>
 
@@ -148,7 +148,7 @@
 
                                 </x-label>
 
-                                <x-textarea class="w-full" wire:model="postEdit.content">
+                                <x-textarea class="w-full" wire:model="postEditForm.content">
                                     <x-input-error for="postEdit.content"></x-input-error>
 
 
@@ -160,7 +160,7 @@
                                 <label for="">
                                     Categorias
 
-                                    <x-select class="w-full" wire:model="postEdit.category_id">
+                                    <x-select class="w-full" wire:model="postEditForm.category_id">
                                         <x-input-error for="postEdit.category_id"></x-input-error>
                                         <option value="" disabled>Selecione una Categoria</option>
                                         @foreach($categories as $category)
@@ -179,10 +179,10 @@
                                         <li>
                                             <label>
                                                 <x-checkbox type="checkbox" value="{{$tag->id}}"
-                                                            wire:model="postEdit.tags">
+                                                            wire:model="postEditForm.tags">
 
                                                 </x-checkbox>
-                                                {{$tag['title']}}
+                                                {{$tag['postEditForm.title']}}
 
                                             </label>
                                         </li>
