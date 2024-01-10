@@ -19,15 +19,17 @@ class Formulario extends Component
     public  $categories,$tags;
     public $is_published,$image_path;
 
-    //ATRIBUTOS PARA LA CLASE POSTCREATEFORM
+    // CLASE POSTCREATEFORM
     //Creacion de un objeto tipo postCreateForm
     public PostCreateForm $postCreateForm;
     public $posts;
 
 
-    //ATRIBUTOS PARA LA CLASE POSTEDITFORM
+    //CLASE POSTEDITFORM
     public PostEditForm $postEditForm;
     //Edicion de un objeto tipo postEditForm
+
+
 
     /**
      *
@@ -57,6 +59,8 @@ class Formulario extends Component
 
         $this->postEditForm->update();
         $this->posts=Post::all();
+
+        $this->dispatch('post-created','Articulo actualizado');
     }
 
 
@@ -86,6 +90,11 @@ class Formulario extends Component
 
         $this->posts=Post::all();
 
+        //EMITO UN EVENTO, TIPO DE EVENTO 'dispatch'
+        //este evento puede ser escuchado por un hijo o padre.
+        // id del evento ? 'post-create' por lo tanto, con su id puede ser escuchado en cualquier lugar de la app
+        $this->dispatch('post-created','Nuevo articulo creado');
+
 
 
     }
@@ -96,6 +105,7 @@ class Formulario extends Component
         $postDelete->delete();
         //actualizo la lista
         $this->posts=Post::all();
+        $this->dispatch('post-created','Articulo Eliminado');
 
     }
 

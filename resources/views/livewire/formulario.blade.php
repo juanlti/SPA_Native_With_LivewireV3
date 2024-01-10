@@ -139,87 +139,122 @@
                         <form wire:submit.prevent="update">
 
 
-                                <div class="mb-4">
-                                    {{-- secion  01 del formulario --}}
-                                    @error('title') <span>{{ $message }}</span> @enderror
-                                    <label>
-                                        Nombre
-                                    </label>
-                                    <input type="text" class="w-full" wire:model="postEditForm.title">
-                                    <x-input-error for="postEditForm.title"></x-input-error>
-                                </div>
+                            <div class="mb-4">
+                                {{-- secion  01 del formulario --}}
+                                @error('title') <span>{{ $message }}</span> @enderror
+                                <label>
+                                    Nombre
+                                </label>
+                                <input type="text" class="w-full" wire:model="postEditForm.title">
+                                <x-input-error for="postEditForm.title"></x-input-error>
+                            </div>
 
-                                <div class="mb-4">
-                                    <x-label>
-                                        Contenido
+                            <div class="mb-4">
+                                <x-label>
+                                    Contenido
 
-                                    </x-label>
+                                </x-label>
 
-                                    <x-textarea class="w-full" wire:model="postEditForm.content">
-                                        <x-input-error for="postEditForm.content"></x-input-error>
-
-
-                                    </x-textarea>
-                                </div>
-                                {{-- secion  02 del formulario --}}
-                                <div class="mb-4 ">
-
-                                    <label for="">
-                                        Categorias
-
-                                        <x-select class="w-full" wire:model="postEditForm.category_id">
-                                            <x-input-error for="postEditForm.category_id"></x-input-error>
-                                            <option value="" disabled>Selecione una Categoria</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{$category->id}}">
-                                                    {{$category->name}}
-                                                </option>
-
-                                            @endforeach
-
-                                        </x-select>
-                                    </label>
-                                </div>
-                                <div>
-                                    <ul>
-                                        @foreach($tags as $tag)
-                                            <li>
-                                                <label>
-                                                    <x-checkbox type="checkbox" value="{{$tag->id}}"
-                                                                wire:model="postEditForm.tags">
+                                <x-textarea class="w-full" wire:model="postEditForm.content">
+                                    <x-input-error for="postEditForm.content"></x-input-error>
 
 
-                                                    </x-checkbox>
-                                                    {{$tag['title']}}
+                                </x-textarea>
+                            </div>
+                            {{-- secion  02 del formulario --}}
+                            <div class="mb-4 ">
 
-                                                </label>
-                                            </li>
+                                <label for="">
+                                    Categorias
+
+                                    <x-select class="w-full" wire:model="postEditForm.category_id">
+                                        <x-input-error for="postEditForm.category_id"></x-input-error>
+                                        <option value="" disabled>Selecione una Categoria</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{$category->id}}">
+                                                {{$category->name}}
+                                            </option>
 
                                         @endforeach
 
-
-                                    </ul>
-                                    <x-input-error for="postEditForm.tags"></x-input-error>
-                                </div>
-
-
-                                <div class="flex justify-end">
-                                    <x-danger-button wire:click="$set('postEditForm.openModal',false)" class="mr-2">
-                                        Cancelar
-
-                                    </x-danger-button>
-
-                                    <x-button>
-
-                                        Actualizar
-
-                                    </x-button>
+                                    </x-select>
+                                </label>
+                            </div>
+                            <div>
+                                <ul>
+                                    @foreach($tags as $tag)
+                                        <li>
+                                            <label>
+                                                <x-checkbox type="checkbox" value="{{$tag->id}}"
+                                                            wire:model="postEditForm.tags">
 
 
-                                </div>
+                                                </x-checkbox>
+                                                {{$tag['title']}}
+
+                                            </label>
+                                        </li>
+
+                                    @endforeach
+
+
+                                </ul>
+                                <x-input-error for="postEditForm.tags"></x-input-error>
+                            </div>
+
+
+                            <div class="flex justify-end">
+                                <x-danger-button wire:click="$set('postEditForm.openModal',false)" class="mr-2">
+                                    Cancelar
+
+                                </x-danger-button>
+
+                                <x-button>
+
+                                    Actualizar
+
+                                </x-button>
+
+
+                            </div>
 
 
                         </form>
+                        {{-- modal   de livewire, muestra una notificacion por cada evento disparado--}}
+
+                        @push('js')
+                            {{-- SOLUCION 1 --}}
+                            <script>
+
+
+                                Livewire.on('post-created', function ($messages) {
+                                    console.log($messages)
+                                });
+
+
+                            </script>
+
+                        @endpush()
+
+
+                        <script>
+                            /*                     {{-- SOLUCION 2 --}}
+                            {{--  Inicializo el evento--}}
+                            {{-- metodo  document.addEventListener  de ESCUCHA --}}
+                            {{-- esucha el evento identificado " livewire:post-created' " --}}
+                            {{-- una vez recepcionado el valor de evento, ejecuta la function() { // codigo en espera}  " --}}
+
+                            document.addEventListener('livewire:post-created',function(){
+                                            Livewire.on('post-created',function($messages){
+                                                console.log($messages);
+                                            })
+
+                                       });
+
+
+                             */
+                        </script>
+
 
                     </div>
                 </div>
