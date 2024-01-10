@@ -64,10 +64,45 @@ class Formulario extends Component
     }
 
 
-    public function closedModal(){
-        $this->openModal=false;
-    }
+    //
 
+    /**
+     * @throws \Exception
+     */
+    /*
+    public function updating($property, $value){
+      // updating => ESTA INTENTANDO VALIDAR DICHO COMPONENTES EN LA BD, SE AGREGA VALIDACIONES
+         //updating es un metodo anecdotico, al igual que los parametros
+            // conocemos el tipo de variable y el valor a modificar
+        //$property => NOMBRE DE LA VARIABLE A UTILIZAR EN EL INPUT
+        //$value => contenido de la variable
+        //dd($value);
+        // VALIDACION
+        if($property=='postCreateForm.category_id'){
+            if($value>3){
+                throw new \Exception("No puedes selecionar esta categoria, vuelve a selecionar del 1 al 3");
+            }
+
+
+        }
+
+    }
+    */
+
+public function updated($property,$value){
+    /// updated => ACTUALIZA LOS VALORES EN LA BD, MODIFICAR EL TIPO DE LETRAS, NO RECOMENDADO PARA  VALIDAR
+    dd($value);
+}
+public function hydrate(){
+    // de back a front => hydrata el objecto
+}
+
+public function dehydrate(){
+    // de front a back => desidrata el objecto
+}
+
+
+    //ciclo de vida de un componente
     public function mount(){
         // CARGA DE DATOS DE MANERA INCONDICIONAL
         // $categories contiene la collecion almacenada de categorias

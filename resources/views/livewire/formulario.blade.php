@@ -38,7 +38,7 @@
 
                 <label for="">
 
-                    <x-select class="w-full" wire:model="postCreateForm.category_id">
+                    <x-select class="w-full" wire:model.live="postCreateForm.category_id">
 
                         <option value="" disabled {{ $postCreateForm->category_id ? 'hidden' : '' }} hidden>Selecione
                             una Categoria
