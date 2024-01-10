@@ -14,7 +14,7 @@ class Formulario extends Component
 
 
 
-
+    public $openModal=false;
     public  $categories,$tags;
     public $is_published,$image_path;
 

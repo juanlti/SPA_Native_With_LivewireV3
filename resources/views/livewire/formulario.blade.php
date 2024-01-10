@@ -31,7 +31,7 @@
 
 
                 </x-textarea>
-                <x-input-error for="postCreate.content"/>
+                <x-input-error for="postCreateForm.content"/>
             </div>
             {{-- secion  02 del formulario --}}
             <div class="mb-4 ">
@@ -39,16 +39,20 @@
                 <label for="">
 
                     <x-select class="w-full" wire:model="postCreateForm.category_id">
-                        <option value="" disabled>Selecione una Categoria</option>
+
+                        <option value="" disabled {{ $postCreateForm->category_id ? 'hidden' : '' }} hidden >Selecione una Categoria</option>
+
                         @foreach($categories as $category)
-                            <option value="{{$category->id}}">
+
+                            <option
+                           value="{{$category->id}}">
                                 {{$category->name}}
                             </option>
 
                         @endforeach
 
                     </x-select>
-                    <x-input-error for="postCreate.category_id"/>
+                    <x-input-error for="postCreateForm.category_id"/>
                 </label>
             </div>
             <div>
@@ -68,7 +72,7 @@
 
 
                 </ul>
-                <x-input-error for="postCreate.tags"/>
+                <x-input-error for="postCreateForm.tags"/>
             </div>
 
 
@@ -219,109 +223,6 @@
             </div>
 
             @endif
-            {{-- MODAL DE JETSTREAM --}}
-            {{--
-            <form wire:submit.prevent="update">
-                <x-dialog-modal wire:modal="openModal">
-                    <x-slot name="title">
-                        {{-- slot title --}}
-
-
-            {{--
-                            </x-slot>
-                            <x-slot name="content">
-                                {{-- slot contente --}}
-            {{--
-
-                <div class="mb-4">
-                    {{-- secion  01 del formulario --}}
-            {{--
-                        @error('title') <span>{{ $message }}</span> @enderror
-                        <label>
-                            Nombre
-                        </label>
-                        <input type="text" class="w-full" wire:model="postEdit.title" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <x-label>
-                            Contenido
-
-                        </x-label>
-
-                        <x-textarea class="w-full" wire:model="postEdit.content" required>
-
-
-                        </x-textarea>
-                    </div>
-                    {{-- secion  02 del formulario --}}
-            {{--
-                    <div class="mb-4 ">
-
-                        <label for="">
-                            Categorias
-
-                            <x-select class="w-full" wire:model="postEdit.category_id" required>
-                                <option value="" disabled>Selecione una Categoria</option>
-                                @foreach($categories as $category)
-                                    <option value="{{$category->id}}">
-                                        {{$category->name}}
-                                    </option>
-
-                                @endforeach
-
-                            </x-select>
-                        </label>
-                    </div>
-                    <div>
-                        <ul>
-                            @foreach($tags as $tag)
-                                <li>
-                                    <label>
-                                        <x-checkbox type="checkbox" value="{{$tag->id}}"
-                                                    wire:model="postEdit.tags">
-
-                                        </x-checkbox>
-                                        {{$tag['title']}}
-
-                                    </label>
-                                </li>
-
-                            @endforeach
-
-
-                        </ul>
-                    </div>
-
-
-
-
-                </x-slot>
-                <x-slot name="footer">
-
-                    {{-- slot footer --}}
-            {{--
-
-                    <div class="flex justify-end">
-                        <x-button class="mr-2">
-
-                            Actualizar
-
-                        </x-button>
-                        <x-danger-button wire:click="$set('openModal',false)">
-                            Cancelar
-
-                        </x-danger-button>
-
-
-                    </div>
-
-
-                </x-slot>
-
-            </x-dialog-modal>
-            </form>
-             --}}
 
         </div>
 

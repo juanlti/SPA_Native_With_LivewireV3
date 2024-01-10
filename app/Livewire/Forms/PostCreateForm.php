@@ -13,7 +13,7 @@ class PostCreateForm extends Form{
     #[Rule('required')]
     public $content;
     #[Rule('required|exists:categories,id')]
-    public $category_id;
+    public $category_id='';
     #[Rule('required|array')]
     public $tags=[];
 
@@ -28,6 +28,7 @@ class PostCreateForm extends Form{
 
 
         $post->tags()->attach($this->tags);
+
         // attach()  METODO QUE ASIGNA VALORES A UNA TABLA PIVOTE
 
         //una vez creado y enlazado, limpiamos los inputs
