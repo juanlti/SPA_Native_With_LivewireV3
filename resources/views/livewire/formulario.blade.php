@@ -12,7 +12,7 @@
                 <x-label>
                     Nombre
 
-                    <input type="text" class="w-full rounded-md" wire:model="postCreateForm.title">
+                    <input type="text" class="w-full rounded-md" wire:model.live="postCreateForm.title">
                 </x-label>
 
 
