@@ -40,12 +40,14 @@
 
                     <x-select class="w-full" wire:model="postCreateForm.category_id">
 
-                        <option value="" disabled {{ $postCreateForm->category_id ? 'hidden' : '' }} hidden >Selecione una Categoria</option>
+                        <option value="" disabled {{ $postCreateForm->category_id ? 'hidden' : '' }} hidden>Selecione
+                            una Categoria
+                        </option>
 
                         @foreach($categories as $category)
 
                             <option
-                           value="{{$category->id}}">
+                                value="{{$category->id}}">
                                 {{$category->name}}
                             </option>
 
@@ -124,7 +126,7 @@
 
     {{-- MODAL PROPIO (:--}}
     {{-- OCULTAMOS MODAL--}}
-    @if($openModal)
+    @if($postEditForm->openModal)
 
         {{-- formulario de edicion--}}
         <div class="bg-gray-800 bg-opacity-25 fixed inset-0">
@@ -136,83 +138,85 @@
 
                         <form wire:submit.prevent="update">
 
-                            <div class="mb-4">
-                                {{-- secion  01 del formulario --}}
-                                @error('title') <span>{{ $message }}</span> @enderror
-                                <label>
-                                    Nombre
-                                </label>
-                                <input type="text" class="w-full" wire:model="postEditForm.title">
-                                <x-input-error for="postEdit.title"></x-input-error>
-                            </div>
 
-                            <div class="mb-4">
-                                <x-label>
-                                    Contenido
+                                <div class="mb-4">
+                                    {{-- secion  01 del formulario --}}
+                                    @error('title') <span>{{ $message }}</span> @enderror
+                                    <label>
+                                        Nombre
+                                    </label>
+                                    <input type="text" class="w-full" wire:model="postEditForm.title">
+                                    <x-input-error for="postEditForm.title"></x-input-error>
+                                </div>
 
-                                </x-label>
+                                <div class="mb-4">
+                                    <x-label>
+                                        Contenido
 
-                                <x-textarea class="w-full" wire:model="postEditForm.content">
-                                    <x-input-error for="postEdit.content"></x-input-error>
+                                    </x-label>
+
+                                    <x-textarea class="w-full" wire:model="postEditForm.content">
+                                        <x-input-error for="postEditForm.content"></x-input-error>
 
 
-                                </x-textarea>
-                            </div>
-                            {{-- secion  02 del formulario --}}
-                            <div class="mb-4 ">
+                                    </x-textarea>
+                                </div>
+                                {{-- secion  02 del formulario --}}
+                                <div class="mb-4 ">
 
-                                <label for="">
-                                    Categorias
+                                    <label for="">
+                                        Categorias
 
-                                    <x-select class="w-full" wire:model="postEditForm.category_id">
-                                        <x-input-error for="postEdit.category_id"></x-input-error>
-                                        <option value="" disabled>Selecione una Categoria</option>
-                                        @foreach($categories as $category)
-                                            <option value="{{$category->id}}">
-                                                {{$category->name}}
-                                            </option>
+                                        <x-select class="w-full" wire:model="postEditForm.category_id">
+                                            <x-input-error for="postEditForm.category_id"></x-input-error>
+                                            <option value="" disabled>Selecione una Categoria</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{$category->id}}">
+                                                    {{$category->name}}
+                                                </option>
+
+                                            @endforeach
+
+                                        </x-select>
+                                    </label>
+                                </div>
+                                <div>
+                                    <ul>
+                                        @foreach($tags as $tag)
+                                            <li>
+                                                <label>
+                                                    <x-checkbox type="checkbox" value="{{$tag->id}}"
+                                                                wire:model="postEditForm.tags">
+
+
+                                                    </x-checkbox>
+                                                    {{$tag['title']}}
+
+                                                </label>
+                                            </li>
 
                                         @endforeach
 
-                                    </x-select>
-                                </label>
-                            </div>
-                            <div>
-                                <ul>
-                                    @foreach($tags as $tag)
-                                        <li>
-                                            <label>
-                                                <x-checkbox type="checkbox" value="{{$tag->id}}"
-                                                            wire:model="postEditForm.tags">
 
-                                                </x-checkbox>
-                                                {{$tag['postEditForm.title']}}
-
-                                            </label>
-                                        </li>
-
-                                    @endforeach
+                                    </ul>
+                                    <x-input-error for="postEditForm.tags"></x-input-error>
+                                </div>
 
 
-                                </ul>
-                                <x-input-error for="postEdit.tags"></x-input-error>
-                            </div>
+                                <div class="flex justify-end">
+                                    <x-danger-button wire:click="$set('postEditForm.openModal',false)" class="mr-2">
+                                        Cancelar
+
+                                    </x-danger-button>
+
+                                    <x-button>
+
+                                        Actualizar
+
+                                    </x-button>
 
 
-                            <div class="flex justify-end">
-                                <x-danger-button wire:click="$set('openModal',false)" class="mr-2">
-                                    Cancelar
-
-                                </x-danger-button>
-
-                                <x-button>
-
-                                    Actualizar
-
-                                </x-button>
-
-
-                            </div>
+                                </div>
 
 
                         </form>
