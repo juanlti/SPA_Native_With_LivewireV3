@@ -14,7 +14,7 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')"
                                 :active="request()->routeIs('dashboard')"
-                                wire:navigate>
+                                wire:navigate.hover>
                         {{ __('Dashboard') }}
                     </x-nav-link>
                         {{--      :active="request()->routeIs('dashboard')"
@@ -23,8 +23,9 @@
                                 HASTA QUE HALLA CARGADO TODOS LOS COMPONENTES
                                 --}}
 
-                    <x-nav-link href="{{ route('viewSpa') }}" :active="request()->routeIs('viewSpa')" wire:navigate>
-                                Prueba de SPA
+                    <x-nav-link href="{{ route('prueba') }}" :active="request()->routeIs('prueba')" wire:navigate.hover>
+                        {{-- con hover espera 0,6 segundos antes de hacer la peticion en segundo plano, para tener los datos ya cargos--}}
+                                Prueba
                     </x-nav-link>
                 </div>
             </div>

@@ -41,5 +41,8 @@
         @stack('modals')
 
         @livewireScripts
+
+        {{--  ALTERNATIVA RECOMENDADA PARA NO UTILIZAR LOS COMANDOS DEL DOM --}}
+            @stack('js')
     </body>
 </html>

@@ -27,4 +27,4 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::view('/SPA','viewSpa')->name('viewSpa');
+Route::view('/prueba','prueba')->name('prueba');
