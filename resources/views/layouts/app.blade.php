@@ -42,7 +42,7 @@
 
         @livewireScripts
 
-        {{--  ALTERNATIVA RECOMENDADA PARA NO UTILIZAR LOS COMANDOS DEL DOM --}}
-            @stack('js')
+        @stack('js')
+        {{-- metpdp @stack('js') SOLUCION: 2  este metodo soluciona el problema de inicializacion del evento--}}
     </body>
 </html>
