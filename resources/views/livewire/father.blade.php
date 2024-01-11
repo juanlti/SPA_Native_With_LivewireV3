@@ -1,7 +1,11 @@
 <div>
     <div>
+        <x-button wire:click="redirigir">
+            IR A LA PAG SPA
 
-        <h1 class="text-2x1 font-semibold">Soy el componente padre</h1>
+        </x-button>
+
+        <h1 class="text-2x1 font-semibol ">Soy el componente padre</h1>
 
         Comunicacion Direcional
 
